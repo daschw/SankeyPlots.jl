@@ -127,10 +127,11 @@ sankey_names(g, ::Nothing) = string.("Node", eachindex(vertices(g)))
 
 function vertex_weight(g, v)
     max(
-        sum(weight, Iterators.filter(e -> src(e) == v, edges(g)), init=0.0),
-        sum(weight, Iterators.filter(e -> dst(e) == v, edges(g)), init=0.0),
+        sum0(weight, Iterators.filter(e -> src(e) == v, edges(g))),
+        sum0(weight, Iterators.filter(e -> dst(e) == v, edges(g))),
     )
 end
+sum0(f, x) = isempty(x) ? 0.0 : sum(f, x)
 
 in_edges(g, v) = Iterators.filter(e -> dst(e) == v, edges(g))
 out_edges(g, v) = Iterators.filter(e -> src(e) == v, edges(g))
