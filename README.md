@@ -1,4 +1,4 @@
-# SankeyPlots
+# SankeyPlots [![Build Status](https://github.com/daschw/SankeyPlots.jl/workflows/ci/badge.svg)](https://github.com/daschw/SankeyPlots.jl.jl/actions)
 
 This package provides a [Plots.jl](https://github.com/JuliaPlots/Plots.jl) recipe for Sankey diagrams.
 
