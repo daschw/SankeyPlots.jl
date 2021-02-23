@@ -1,6 +1,6 @@
 # SankeyPlots
 
-This package provides a [Plots.jl] recipe for Sankey diagrams.
+This package provides a [Plots.jl](https://github.com/JuliaPlots/Plots.jl) recipe for Sankey diagrams.
 
 ## Usage
 
