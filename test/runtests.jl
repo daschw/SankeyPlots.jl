@@ -30,6 +30,7 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
             edge_color=:gradient,
             label_position=:bottom,
             label_size=7,
+            compact=true,
         )
     end
 

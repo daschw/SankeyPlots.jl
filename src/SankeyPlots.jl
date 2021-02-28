@@ -16,10 +16,17 @@ export sankey, sankey!
     sankey(g::SimpleWeightedDiGraph; kwargs..., plotattributes...)
 
 Plot a sankey diagram.
-Supported keyword arguments are:
-- `node_labels`: A vector of labels for each node
-- `node_colors`: A vector of colors or a color palette
-- `edge_color`: `:src`, `:dst`, `:gradient` or a color
+
+In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attributes/) the following keyword arguments are supported.
+
+| Keyword argument | Default value | Options |
+|---|---|----|
+| `node_labels` | `nothing` | `AbstractVector{<:String}` |
+| `node_colors` | `nothing` | Vector of [color specifications supported by Plots.jl](http://docs.juliaplots.org/latest/colors/) or [color palette](http://docs.juliaplots.org/latest/generated/colorschemes/#ColorPalette) |
+| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst` or `:gradient` |
+| `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
+| `label_size` | `8` | `Int` |
+| `compact` | `false` | `Bool` |
 """
 @userplot Sankey
 
@@ -31,6 +38,7 @@ Supported keyword arguments are:
     edge_color=:gray,
     label_position=:inside,
     label_size=8,
+    compact=false,
 )
     g = sankey_graph(s.args...)
     names = sankey_names(g, node_labels)
@@ -43,6 +51,10 @@ Supported keyword arguments are:
     
     vw = vertex_weight.(Ref(g), vertices(g))
     m = maximum(vw)
+    
+    if compact == true
+        y = make_compact(x, y, vw / m)
+    end
     
     src_offsets = get_src_offsets(g, perm) ./ m
     dst_offsets = get_dst_offsets(g, perm) ./ m
@@ -140,9 +152,9 @@ Supported keyword arguments are:
                     error("label_position :$label_position not supported")
                 end
                 ylab = if label_position === :top
-                    y[i] + h + 0.05
+                    y[i] + h + 0.02
                 elseif label_position === :bottom
-                    y[i] - h - 0.05
+                    y[i] - h - 0.0025 * label_size
                 else
                     y[i]
                 end
@@ -237,6 +249,27 @@ end
 function remap(x, lo, hi)
     xlo, xhi = extrema(x)
     lo .+ (x .- xlo) / (xhi - xlo) * (hi - lo)
+end
+
+function make_compact(x, y, w)
+    x = round.(Int, x)
+    ux = unique(x)
+    heights = zeros(length(ux))
+    uinds = [findall(==(uxi), x) for uxi in ux]
+    for (i, inds) in enumerate(uinds)
+        perm = sortperm(view(y, inds))
+        start = 0
+        for j in inds[perm]
+            y[j] = start + w[j] / 2
+            start += 0.1 + w[j]
+        end
+        heights[i] = start - 0.1
+    end
+    maxh = maximum(heights)
+    for (i, inds) in enumerate(uinds)
+        y[inds] .+= (maxh - heights[i]) / 2
+    end
+    return y     
 end
 
 end

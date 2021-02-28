@@ -32,6 +32,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 | `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst` or `:gradient` |
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
+| `compact` | `false` | `Bool` |
 
 ```julia
 names = [
@@ -53,6 +54,7 @@ sankey(
     edge_color=:gradient,
     label_position=:bottom,
     label_size=7,
+    compact=true,
 )
 ```
 ![](test/refs/readme_kwargs.png)
