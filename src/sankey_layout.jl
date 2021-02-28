@@ -7,7 +7,7 @@ function sankey_layout(original_graph)
 
     # 1. Layer Assigment
     layer2nodes = LayeredLayouts.layer_by_longest_path_to_source(graph)
-    is_dummy_mask = LayeredLayouts.add_dummy_nodes!(graph, layer2nodes)
+    is_dummy_mask, edge_to_path = LayeredLayouts.add_dummy_nodes!(graph, layer2nodes)
 
     # 2. Layer Ordering
     start_time = LayeredLayouts.Dates.now()
