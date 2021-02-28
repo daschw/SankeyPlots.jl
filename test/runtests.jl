@@ -1,3 +1,4 @@
+using Plots
 using SankeyPlots
 using ReferenceTests
 using Test
