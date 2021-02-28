@@ -50,9 +50,9 @@ sankey(
     src, dst, weights;
     node_labels=names,
     node_colors=energy_colors,
-    edge_color="#789",
-    legend=:outerright,
-    fillalpha=1,
+    edge_color=:gradient,
+    label_position=:bottom,
+    label_size=7,
 )
 ```
 ![](test/refs/readme_kwargs.png)
