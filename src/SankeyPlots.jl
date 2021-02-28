@@ -2,7 +2,7 @@ module SankeyPlots
 
 using LayeredLayouts
 using LightGraphs
-using PlotUtils
+using Plots
 using RecipesBase
 using SimpleWeightedGraphs
 using SparseArrays
@@ -29,6 +29,8 @@ Supported keyword arguments are:
     node_labels=nothing,
     node_colors=nothing,
     edge_color=:gray,
+    label_position=:inside,
+    label_size=8,
 )
     g = sankey_graph(s.args...)
     names = sankey_names(g, node_labels)
@@ -44,6 +46,14 @@ Supported keyword arguments are:
     
     src_offsets = get_src_offsets(g, perm) ./ m
     dst_offsets = get_dst_offsets(g, perm) ./ m
+
+    if label_position ∉ (:inside, :left, :right, :top, :bottom, :node, :legend)
+        error("label_position :$label_position not supported")
+    elseif label_position !== :legend
+        xlabs = Float64[]
+        ylabs = Float64[]
+        lab_orientations = Symbol[]
+    end
     
     for (i, v) in enumerate(vertices(g))
         h = vw[i] / (2m)
@@ -51,8 +61,8 @@ Supported keyword arguments are:
         if !(mask[i])
             @series begin
                 seriestype := :shape
-                label := names[i]
-                fillcolor := node_colors[mod1(i, end)]
+                label := label_position === :legend ? names[i] : ""
+                fillcolor --> node_colors[mod1(i, end)]
                 [x[i]-0.1, x[i]+0.1, x[i]+0.1, x[i]-0.1], [y[i]-h, y[i]-h, y[i]+h, y[i]+h]
             end
 
@@ -109,12 +119,64 @@ Supported keyword arguments are:
                     end
                 end
             end
+
+            if label_position !== :legend
+                xlab, orientation = if label_position in (:node, :top, :bottom)
+                    olab = if label_position === :top
+                        :bottom
+                    elseif label_position === :bottom
+                        :top
+                    else
+                        :center
+                    end
+                    x[i], olab
+                elseif label_position === :right ||
+                        (label_position === :inside && x[i] < maximum(x))
+                    x[i] + 0.15, :left
+                elseif label_position === :left ||
+                        (label_position === :inside && x[i] == maximum(x))
+                    x[i] - 0.15, :right
+                else
+                    error("label_position :$label_position not supported")
+                end
+                ylab = if label_position === :top
+                    y[i] + h + 0.05
+                elseif label_position === :bottom
+                    y[i] - h - 0.05
+                else
+                    y[i]
+                end
+                push!(xlabs, xlab)
+                push!(ylabs, ylab)
+                push!(lab_orientations, orientation)
+            end
+        end
+    end
+
+    if label_position !== :legend
+        @series begin
+            primary := :false
+            seriestype := :scatter
+            markersize := 0
+            series_annotations := text.(names, lab_orientations, label_size)
+            xlabs, ylabs
+        end
+        
+        # extend axes for labels
+        if label_position in (:left, :right)
+            x_extra = label_position === :left ? minimum(xlabs) - 0.4 : maximum(xlabs) + 0.5
+            @series begin
+                primary := false
+                seriestype := :scatter
+                markersize := 0
+                [x_extra], [ylabs[1]]
+            end
         end
     end
 
     primary := false
     framestyle --> :none
-    legend --> :outertopright
+    legend --> label_position === :legend ? :outertopright : false
     ()
 end
 

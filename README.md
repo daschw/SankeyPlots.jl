@@ -2,10 +2,17 @@
 
 This package provides a [Plots.jl](https://github.com/JuliaPlots/Plots.jl) recipe for Sankey diagrams.
 
+## Installation
+
+```julia
+julia> ]
+
+pkg> add SankeyPlots
+```
+
 ## Usage
 
 ```julia
-using Plots
 using SankeyPlots
 
 src = [1, 1, 1, 1, 2, 2, 2, 3, 4, 5]
@@ -14,9 +21,17 @@ weights = [0.1, 0.3, 0.5, 0.5, 0.2, 2.8, 1, 0.45, 4.5, 3.3]
 
 sankey(src, dst, weights)
 ```
-![](test/refs/energy_gray.png)
+![](test/refs/readme.png)
 
-Currently keyword arguments for the node names, the node colors and the stream colors are supported.
+In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attributes/) the following keyword arguments are supported.
+
+| Keyword argument | Default value | Options |
+|---|---|----|
+| `node_labels` | `nothing` | `AbstractVector{<:String}` |
+| `node_colors` | `nothing` | Vector of [color specifications supported by Plots.jl](http://docs.juliaplots.org/latest/colors/) or [color palette](http://docs.juliaplots.org/latest/generated/colorschemes/#ColorPalette) |
+| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst` or `:gradient` |
+| `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
+| `label_size` | `8` | `Int` |
 
 ```julia
 names = [
@@ -40,35 +55,7 @@ sankey(
     fillalpha=1,
 )
 ```
-![](test/refs/energy_kwargs.png)
-
-In addition to colors, `edge_color` also accepts the Symbols `:src`, `:dst` and `:gradient` to pick the colors of connected nodes.
-
-```julia
-sankey(
-    src, dst, weights;
-    node_labels=names,
-    node_colors=energy_colors,
-    edge_color=:src,
-    legend=:outerright,
-    fillalpha=1,
-)
-```
-![](test/refs/energy_src.png)
-
-```julia
-...
-    edge_color=:dst,
-...
-```
-![](test/refs/energy_dst.png)
-
-```julia
-...
-    edge_color=:gradient,
-...
-```
-![](test/refs/energy_grad.png)
+![](test/refs/readme_kwargs.png)
 
 ## Acknowledgement
 

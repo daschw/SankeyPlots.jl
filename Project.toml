@@ -1,12 +1,12 @@
 name = "SankeyPlots"
 uuid = "8fd88ec8-d95c-41fc-b299-05f2225f2cc5"
 authors = ["Daniel Schwabeneder <daschw@disroot.org> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 LayeredLayouts = "f4a74d36-062a-4d48-97cd-1356bad1de4e"
 LightGraphs = "093fc24a-ae57-5d10-9952-331d41423f4d"
-PlotUtils = "995b91a9-d308-5afd-9ec6-746e21dbc043"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 SimpleWeightedGraphs = "47aef6b3-ad0c-573a-a1e2-d07658019622"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
@@ -14,7 +14,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 [compat]
 LayeredLayouts = "0.1"
 LightGraphs = "1"
-PlotUtils = "1"
+Plots = "1"
 RecipesBase = "1"
 SimpleWeightedGraphs = "1"
 julia = "1.5"
