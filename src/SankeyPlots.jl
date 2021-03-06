@@ -7,7 +7,7 @@ using RecipesBase
 using SimpleWeightedGraphs
 using SparseArrays
 
-include("sankey_layout.jl")
+# include("sankey_layout.jl")
 
 export sankey, sankey!
 
@@ -46,7 +46,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
         node_colors = palette(get(plotattributes, :color_palette, :default))
     end
     
-    g, x, y, mask = sankey_layout(g)
+    x, y, mask = sankey_layout!(g)
     perm = sortperm(y, rev=true)
     
     vw = vertex_weight.(Ref(g), vertices(g))
@@ -193,11 +193,34 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 end
 
 sankey_graph(src, dst, w) = SimpleWeightedDiGraph(src, dst, w)
-sankey_graph(g::SimpleWeightedDiGraph) = g
+sankey_graph(g::SimpleWeightedDiGraph) = copy(g)
 sankey_graph(args...) = error("Check `?sankey` for supported signatures.")
 
 sankey_names(g, names) = names
 sankey_names(g, ::Nothing) = string.("Node", eachindex(vertices(g)))
+
+function sankey_layout!(g)
+    xs, ys, paths = solve_positions(Zarate(), g)
+    mask = falses(length(xs))
+    for (edge, path) in paths
+        s = edge.src
+        px, py = path
+        if length(px) > 2
+            for i in 2:length(px)-1
+                add_vertex!(g)
+                v = last(vertices(g))
+                add_edge!(g, s, v, edge.weight)
+                push!(xs, px[i])
+                push!(ys, py[i])
+                push!(mask, true)
+                s = v
+            end
+            add_edge!(g, s, edge.dst, edge.weight)
+            rem_edge!(g, edge)
+        end
+    end
+    return xs, ys, mask
+end
 
 function vertex_weight(g, v)
     max(
