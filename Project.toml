@@ -1,7 +1,7 @@
 name = "SankeyPlots"
 uuid = "8fd88ec8-d95c-41fc-b299-05f2225f2cc5"
 authors = ["Daniel Schwabeneder <daschw@disroot.org> and contributors"]
-version = "0.1.2"
+version = "0.1.3"
 
 [deps]
 LayeredLayouts = "f4a74d36-062a-4d48-97cd-1356bad1de4e"

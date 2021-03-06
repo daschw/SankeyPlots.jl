@@ -7,8 +7,6 @@ using RecipesBase
 using SimpleWeightedGraphs
 using SparseArrays
 
-# include("sankey_layout.jl")
-
 export sankey, sankey!
 
 """
