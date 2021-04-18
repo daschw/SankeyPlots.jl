@@ -41,19 +41,19 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     g = sankey_graph(s.args...)
     names = sankey_names(g, node_labels)
     if node_colors === nothing
-        node_colors = palette(get(plotattributes, :color_palette, :default))
+        node_colors = palette(get(plotattributes, :color_palette, :default), nv(g))
     end
-    
+
     x, y, mask = sankey_layout!(g)
     perm = sortperm(y, rev=true)
-    
+
     vw = vertex_weight.(Ref(g), vertices(g))
     m = maximum(vw)
-    
+
     if compact == true
         y = make_compact(x, y, vw / m)
     end
-    
+
     src_offsets = get_src_offsets(g, perm) ./ m
     dst_offsets = get_dst_offsets(g, perm) ./ m
 
@@ -64,10 +64,10 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
         ylabs = Float64[]
         lab_orientations = Symbol[]
     end
-    
+
     for (i, v) in enumerate(vertices(g))
         h = vw[i] / (2m)
-        
+
         if !(mask[i])
             @series begin
                 seriestype := :shape
@@ -105,7 +105,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                     y_coords = remap(1 ./ (1 .+ exp.(6 .* (1 .- 2 .* x_coords))), y_src, y_dst)
                     append!(sankey_y, y_coords)
                     sankey_x = range(x[i]+0.1, x[k]-0.1, step=0.01)
-                    
+
                     @series begin
                         seriestype := :path
                         primary := false
@@ -171,7 +171,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
             series_annotations := text.(names, lab_orientations, label_size)
             xlabs, ylabs
         end
-        
+
         # extend axes for labels
         if label_position in (:left, :right)
             x_extra = label_position === :left ? minimum(xlabs) - 0.4 : maximum(xlabs) + 0.5
@@ -290,7 +290,7 @@ function make_compact(x, y, w)
     for (i, inds) in enumerate(uinds)
         y[inds] .+= (maxh - heights[i]) / 2
     end
-    return y     
+    return y
 end
 
 end
