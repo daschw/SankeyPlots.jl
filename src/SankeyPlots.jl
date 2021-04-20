@@ -178,7 +178,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
             @series begin
                 primary := false
                 seriestype := :scatter
-                markeralfa := 0
+                markeralpha := 0
                 [x_extra], [ylabs[1]]
             end
         end
