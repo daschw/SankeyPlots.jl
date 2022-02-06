@@ -56,6 +56,9 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     src_offsets = get_src_offsets(g, perm) ./ m
     dst_offsets = get_dst_offsets(g, perm) ./ m
 
+    println("src_offsets: ", src_offsets)
+    println("dst_offsets: ", dst_offsets)
+
     if label_position ∉ (:inside, :left, :right, :top, :bottom, :node, :legend)
         error("label_position :$label_position not supported")
     elseif label_position !== :legend
@@ -78,8 +81,9 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
             for (j, w) in enumerate(vertices(g))
                 if has_edge(g, v, w)
                     y_src = y[i] + h - src_offsets[i, j]
-                    edge_it = Edge(j, i)
-                    h_edge = edge_it in edges(g) ? get_prop(g, edge_it, :weight) : 0.0 / (2m)
+                    edge_it = Edge(v, w)
+                    h_edge = get_prop(g, edge_it, :weight) / (2m)
+                    println(i, " ", j, " ", h_edge)
 
                     sankey_y = Float64[]
                     x_start = x[i] + 0.1
@@ -275,9 +279,9 @@ function get_src_offsets(g, perm)
                 if offset > 0
                     p[i, j] = offset
                 end
-                edge_it = Edge(j, i)
+                edge_it = Edge(v, verts[j])
                 # add to offset if edge is available
-                offset += edge_it in edges(g) ? get_prop(g, edge_it, :weight) : 0.0
+                offset += get_prop(g, edge_it, :weight)
             end
         end
     end
@@ -295,7 +299,7 @@ function get_dst_offsets(g, perm)
                 if offset > 0
                     p[i, j] = offset
                 end
-                offset += get_prop(g, Edge(j, i), :weight)
+                offset += get_prop(g, Edge(verts[j], i), :weight)
             end
         end
     end
