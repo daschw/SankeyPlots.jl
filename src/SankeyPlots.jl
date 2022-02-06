@@ -78,8 +78,8 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
             for (j, w) in enumerate(vertices(g))
                 if has_edge(g, v, w)
                     y_src = y[i] + h - src_offsets[i, j]
-                    h_edge = g.weights[j, i] / (2m)
-
+                    edge_it = Edge(j, i)
+                    h_edge = edge_it in edges(g) ? get_prop(g, edge_it, :weight) : 0.0 / (2m)
 
                     sankey_y = Float64[]
                     x_start = x[i] + 0.1
@@ -275,7 +275,9 @@ function get_src_offsets(g, perm)
                 if offset > 0
                     p[i, j] = offset
                 end
-                offset += get_prop(g, Edge(j, i), :weight)
+                edge_it = Edge(j, i)
+                # add to offset if edge is available
+                offset += edge_it in edges(g) ? get_prop(g, edge_it, :weight) : 0.0
             end
         end
     end
