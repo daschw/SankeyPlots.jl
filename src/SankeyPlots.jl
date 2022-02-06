@@ -56,9 +56,6 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     src_offsets = get_src_offsets(g, perm) ./ m
     dst_offsets = get_dst_offsets(g, perm) ./ m
 
-    println("src_offsets: ", src_offsets)
-    println("dst_offsets: ", dst_offsets)
-
     if label_position ∉ (:inside, :left, :right, :top, :bottom, :node, :legend)
         error("label_position :$label_position not supported")
     elseif label_position !== :legend
@@ -83,7 +80,6 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                     y_src = y[i] + h - src_offsets[i, j]
                     edge_it = Edge(v, w)
                     h_edge = get_prop(g, edge_it, :weight) / (2m)
-                    println(i, " ", j, " ", h_edge)
 
                     sankey_y = Float64[]
                     x_start = x[i] + 0.1
