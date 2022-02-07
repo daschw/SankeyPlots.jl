@@ -1,17 +1,16 @@
 module SankeyPlots
 
 using LayeredLayouts
-using LightGraphs
 using Plots
 using RecipesBase
-using SimpleWeightedGraphs
+using Graphs, MetaGraphs
 using SparseArrays
 
 export sankey, sankey!
 
 """
     sankey(src, dst, weights; kwargs..., plotattributes...)
-    sankey(g::SimpleWeightedDiGraph; kwargs..., plotattributes...)
+    sankey(g::AbstractMetaGraph; kwargs..., plotattributes...)
 
 Plot a sankey diagram.
 
@@ -79,8 +78,8 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
             for (j, w) in enumerate(vertices(g))
                 if has_edge(g, v, w)
                     y_src = y[i] + h - src_offsets[i, j]
-                    h_edge = g.weights[j, i] / (2m)
-
+                    edge_it = Edge(v, w)
+                    h_edge = get_prop(g, edge_it, :weight) / (2m)
 
                     sankey_y = Float64[]
                     x_start = x[i] + 0.1
@@ -190,8 +189,41 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     ()
 end
 
-sankey_graph(src, dst, w) = SimpleWeightedDiGraph(src, dst, w)
-sankey_graph(g::SimpleWeightedDiGraph) = copy(g)
+"Function to add a weighted edge"
+function add_weighted_edge!(g, src, dst, weight)
+    new_edge = Edge(src, dst)
+    add_edge!(g, new_edge)
+    set_prop!(g, new_edge, :weight, weight)
+    return g
+end
+
+"""
+Function to create a MetaGraphs from source nodes (src), destination nodes (dst) and weights (w)
+"""
+function sankey_graph(src::Vector{T}, dst::Vector{T}, w) where {T <: Integer}
+    # get list of unique nodes
+    unique_nodes = sort(unique([src; dst]))
+
+    n_nodes = length(unique_nodes)
+    n_edges = length(src)
+    list_nodes = 1:n_nodes
+
+    # verify that the node numbers is appropriate
+    @assert(unique_nodes==unique_nodes)
+    # verify length of vectors
+    @assert(length(src)==length(dst)==length(w))
+
+    # initialize graph
+    g = MetaDiGraph(n_nodes)
+
+    # add edges iteratively
+    for i = 1:n_edges
+        add_weighted_edge!(g, src[i], dst[i], w[i])
+    end
+
+    return g
+end
+sankey_graph(g::AbstractMetaGraph) = copy(g)
 sankey_graph(args...) = error("Check `?sankey` for supported signatures.")
 
 sankey_names(g, names) = names
@@ -203,17 +235,18 @@ function sankey_layout!(g)
     for (edge, path) in paths
         s = edge.src
         px, py = path
+        weight_path = get_prop(g, edge, :weight)
         if length(px) > 2
             for i in 2:length(px)-1
                 add_vertex!(g)
                 v = last(vertices(g))
-                add_edge!(g, s, v, edge.weight)
+                add_weighted_edge!(g, s, v, weight_path)
                 push!(xs, px[i])
                 push!(ys, py[i])
                 push!(mask, true)
                 s = v
             end
-            add_edge!(g, s, edge.dst, edge.weight)
+            add_weighted_edge!(g, s, edge.dst, weight_path)
             rem_edge!(g, edge)
         end
     end
@@ -222,8 +255,8 @@ end
 
 function vertex_weight(g, v)
     max(
-        sum0(weight, Iterators.filter(e -> src(e) == v, edges(g))),
-        sum0(weight, Iterators.filter(e -> dst(e) == v, edges(g))),
+        sum0(x->get_prop(g, x, :weight), Iterators.filter(e -> src(e) == v, edges(g))),
+        sum0(x->get_prop(g, x, :weight), Iterators.filter(e -> dst(e) == v, edges(g))),
     )
 end
 sum0(f, x) = isempty(x) ? 0.0 : sum(f, x)
@@ -242,7 +275,9 @@ function get_src_offsets(g, perm)
                 if offset > 0
                     p[i, j] = offset
                 end
-                offset += g.weights[j, i]
+                edge_it = Edge(v, verts[j])
+                # add to offset if edge is available
+                offset += get_prop(g, edge_it, :weight)
             end
         end
     end
@@ -260,7 +295,7 @@ function get_dst_offsets(g, perm)
                 if offset > 0
                     p[i, j] = offset
                 end
-                offset += g.weights[i, j]
+                offset += get_prop(g, Edge(verts[j], i), :weight)
             end
         end
     end
