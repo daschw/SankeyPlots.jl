@@ -114,13 +114,13 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                         fillalpha --> 0.5
                         if edge_color === :gradient
                             fillcolor := getindex(
-                                cgrad(node_colors[[i, k]]),
+                                cgrad(node_colors[mod1.([i, k], end)]),
                                 range(0, 1, length=length(sankey_x)),
                             )
                         elseif edge_color === :src
-                            fillcolor := node_colors[i]
+                            fillcolor := node_colors[mod1(i, end)]
                         elseif edge_color === :dst
-                            fillcolor := node_colors[k]
+                            fillcolor := node_colors[mod1(k, end)]
                         else
                             fillcolor := edge_color
                         end
