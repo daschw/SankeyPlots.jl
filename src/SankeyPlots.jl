@@ -200,7 +200,7 @@ end
 """
 Function to create a MetaGraphs from source nodes (src), destination nodes (dst) and weights (w)
 """
-function sankey_graph(src::Vector{T}, dst::Vector{T}, w) where {T <: Integer}
+function sankey_graph(src::Vector, dst::Vector, w)
     # get list of unique nodes
     unique_nodes = sort(unique([src; dst]))
 
@@ -208,10 +208,16 @@ function sankey_graph(src::Vector{T}, dst::Vector{T}, w) where {T <: Integer}
     n_edges = length(src)
     list_nodes = 1:n_nodes
 
-    # verify that the node numbers is appropriate
-    @assert(unique_nodes==unique_nodes)
+    # process src and dst to avoid missing nodes
+
+    # Parse src and dst to match all ids in unique_nodes
+    parser_dict = Dict(unique_nodes[id]=>id for id = 1:length(unique_nodes))
+    
+    src = [parser_dict[src_val] for src_val in src]
+    dst = [parser_dict[dst_val] for dst_val in dst]
+
     # verify length of vectors
-    @assert(length(src)==length(dst)==length(w))
+    @assert length(src)==length(dst)==length(w)  "Mismatch in the lengths of input parameters"
 
     # initialize graph
     g = MetaDiGraph(n_nodes)
