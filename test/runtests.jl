@@ -31,6 +31,8 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
             label_position=:bottom,
             label_size=7,
             compact=true,
+            force_layer=[6=>2],
+            force_order=[5=>1]
         )
     end
 
@@ -50,13 +52,13 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
 
     @testset "force_layer" begin
         @test_reference "refs/force_layer.png" sankey(
-            src, dst, weights; force_order=[6=>3]  # move node 6 to layer 3
+            src, dst, weights; force_layer=[6=>2]  # move node 6 to layer 3
         )
     end
 
     @testset "force_order" begin
         @test_reference "refs/force_order.png" sankey(
-            src, dst, weights; force_order=[2=>1]  # node 2 shall come before node 1
+            src, dst, weights; force_order=[5=>1]  # node 2 shall come before node 1
         )
     end
 end
