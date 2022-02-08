@@ -23,7 +23,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 | `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst` or `:gradient` |
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
-| `compact` | `Vector{Pair{Int,Int}}()` | `Bool` |
+| `compact` | `false` | `Bool` |
 | `force_layer` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the layer for every node e.g. `[3=>4]` to force node 3 in layer 4 |
 | `force_order` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the node ordering in each layer e.g. `[1=>2]` to specify node 1 preceeds node 2 in the same layer |"""
 @userplot Sankey
