@@ -105,6 +105,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                     append!(sankey_y, y_coords)
                     sankey_x = range(x[i]+0.1, x[k]-0.1, step=0.01)
 
+                    missing_keys = Tuple{Int64, Int64}[]
                     @series begin
                         seriestype := :path
                         primary := false
@@ -122,12 +123,18 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                         elseif edge_color === :dst
                             fillcolor := node_colors[mod1(k, end)]
                         elseif typeof(edge_color) <: AbstractDict{Tuple{Int64, Int64}, <: Colorant}
-                            fillcolor := edge_color[(i, k)]
+                            if haskey(edge_color, (i, k))
+                                fillcolor := edge_color[(i, k)]
+                            else
+                                push!(missing_keys, (i, k))
+                                fillcolor := :gray
+                            end
                         else
                             fillcolor := edge_color
                         end
                         sankey_x, sankey_y
                     end
+                    isempty(missing_keys) || @warn "The following missing keys in the edge_color dictionary defaulted to gray" missing_keys
                 end
             end
 
