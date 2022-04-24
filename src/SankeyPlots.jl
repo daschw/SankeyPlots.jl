@@ -20,7 +20,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 |---|---|----|
 | `node_labels` | `nothing` | `AbstractVector{<:String}` |
 | `node_colors` | `nothing` | Vector of [color specifications supported by Plots.jl](http://docs.juliaplots.org/latest/colors/) or [color palette](http://docs.juliaplots.org/latest/generated/colorschemes/#ColorPalette) |
-| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst` or `:gradient` |
+| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst`, `:gradient` or an `AbstractDict{Tuple{Int64, Int64}, <:Colorant}` where `edge_color[(src, dst)]` maps to a color |
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
 | `compact` | `false` | `Bool` |
@@ -105,6 +105,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                     append!(sankey_y, y_coords)
                     sankey_x = range(x[i]+0.1, x[k]-0.1, step=0.01)
 
+                    missing_keys = Tuple{Int64, Int64}[]
                     @series begin
                         seriestype := :path
                         primary := false
@@ -121,11 +122,19 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                             fillcolor := node_colors[mod1(i, end)]
                         elseif edge_color === :dst
                             fillcolor := node_colors[mod1(k, end)]
+                        elseif typeof(edge_color) <: AbstractDict{Tuple{Int64, Int64}, <: Colorant}
+                            if haskey(edge_color, (i, k))
+                                fillcolor := edge_color[(i, k)]
+                            else
+                                push!(missing_keys, (i, k))
+                                fillcolor := :gray
+                            end
                         else
                             fillcolor := edge_color
                         end
                         sankey_x, sankey_y
                     end
+                    isempty(missing_keys) || @warn "The following missing keys in the edge_color dictionary defaulted to gray" missing_keys
                 end
             end
 
