@@ -122,7 +122,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                             fillcolor := node_colors[mod1(i, end)]
                         elseif edge_color === :dst
                             fillcolor := node_colors[mod1(k, end)]
-                        elseif typeof(edge_color) <: AbstractDict{Tuple{Int64, Int64}, <: Colorant}
+                        elseif typeof(edge_color) <: AbstractDict{Tuple{Int64, Int64}}
                             if haskey(edge_color, (i, k))
                                 fillcolor := edge_color[(i, k)]
                             else
