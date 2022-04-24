@@ -20,7 +20,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 |---|---|----|
 | `node_labels` | `nothing` | `AbstractVector{<:String}` |
 | `node_colors` | `nothing` | Vector of [color specifications supported by Plots.jl](http://docs.juliaplots.org/latest/colors/) or [color palette](http://docs.juliaplots.org/latest/generated/colorschemes/#ColorPalette) |
-| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/) or color selection from connected nodes with `:src`, `:dst`, `:gradient` or an `AbstractDict{Tuple{Int64, Int64}, <:Colorant}` where `edge_color[(src, dst)]` maps to a color |
+| `edge_color` | `:gray` | Plots.jl supported [color](http://docs.juliaplots.org/latest/colors/), color selection from connected nodes with `:src`, `:dst`, `:gradient`, or an `AbstractDict{Tuple{Int, Int}, Any}` where `edge_color[(src, dst)]` maps to a color |
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
 | `compact` | `false` | `Bool` |
@@ -122,7 +122,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
                             fillcolor := node_colors[mod1(i, end)]
                         elseif edge_color === :dst
                             fillcolor := node_colors[mod1(k, end)]
-                        elseif typeof(edge_color) <: AbstractDict{Tuple{Int64, Int64}}
+                        elseif typeof(edge_color) <: AbstractDict{Tuple{Int, Int}}
                             if haskey(edge_color, (i, k))
                                 fillcolor := edge_color[(i, k)]
                             else
