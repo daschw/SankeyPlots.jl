@@ -33,6 +33,9 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
 | `compact` | `false` | `Bool` |
+| `force_layer` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the layer for every node e.g. `[4=>2]` to force node 4 in layer 3 |
+| `force_order` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the node ordering in each layer e.g. `[1=>2]` to specify node 1 preceeds node 2 in the same layer |
+
 
 ```julia
 names = [
@@ -55,6 +58,8 @@ sankey(
     label_position=:bottom,
     label_size=7,
     compact=true,
+    force_layer=[6=>2],
+    force_order=[5=>1]
 )
 ```
 ![](test/refs/readme_kwargs.png)
