@@ -31,7 +31,7 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
             label_position=:bottom,
             label_size=7,
             compact=true,
-            force_layer=[6=>2],
+            force_layer=[6=>3],
             force_order=[5=>1]
         )
     end
