@@ -22,7 +22,7 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
 
 @testset "SankeyPlots.jl" begin
     @testset "readme" begin
-        @test_reference "refs/readme.png" sankey(src, dst, weights)
+        @test_reference "refs/readme.png" sankey(src, dst, weights; force_order=[5=>1])
         @test_reference "refs/readme_kwargs.png" sankey(
             src, dst, weights;
             node_labels=names,
