@@ -24,7 +24,8 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 | `label_position` | `:inside` | `:legend`, `:node`, `:left`, `:right`, `:top` or `:bottom` |
 | `label_size` | `8` | `Int` |
 | `compact` | `false` | `Bool` |
-"""
+| `force_layer` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the layer for every node e.g. `[4=>2]` to force node 4 in layer 3 |
+| `force_order` | `Vector{Pair{Int,Int}}()` | Vectors of Int pairs specifying the node ordering in each layer e.g. `[1=>2]` to specify node 1 preceeds node 2 in the same layer |"""
 @userplot Sankey
 
 
@@ -36,6 +37,8 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     label_position=:inside,
     label_size=8,
     compact=false,
+    force_layer::Vector{Pair{Int,Int}}=Vector{Pair{Int,Int}}(),
+    force_order::Vector{Pair{Int,Int}}=Vector{Pair{Int,Int}}(),
 )
     g = sankey_graph(s.args...)
     names = sankey_names(g, node_labels)
@@ -43,7 +46,7 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
         node_colors = palette(get(plotattributes, :color_palette, :default))
     end
 
-    x, y, mask = sankey_layout!(g)
+    x, y, mask = sankey_layout!(g, force_layer, force_order)
     perm = sortperm(y, rev=true)
 
     vw = vertex_weight.(Ref(g), vertices(g))
@@ -244,8 +247,10 @@ sankey_graph(args...) = error("Check `?sankey` for supported signatures.")
 sankey_names(g, names) = names
 sankey_names(g, ::Nothing) = string.("Node", eachindex(vertices(g)))
 
-function sankey_layout!(g)
-    xs, ys, paths = solve_positions(Zarate(), g)
+function sankey_layout!(g, force_layer, force_order)
+    xs, ys, paths = solve_positions(
+        Zarate(), g, force_layer=force_layer, force_order=force_order
+    )
     mask = falses(length(xs))
     for (edge, path) in paths
         s = edge.src
