@@ -52,7 +52,7 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
 
     @testset "force_layer" begin
         @test_reference "refs/force_layer.png" sankey(
-            src, dst, weights; force_layer=[6=>2]  # move node 6 to layer 3
+            src, dst, weights; force_layer=[6=>3]  # move node 6 to layer 3
         )
     end
 
