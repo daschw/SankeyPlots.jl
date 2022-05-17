@@ -40,6 +40,19 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
         for c in (:src, :dst, "#789")
             @test_reference "refs/edge_color_$c.png" sankey(src, dst, weights; edge_color=c, force_order=[5=>1])
         end
+        c = Dict(
+            (1, 6)=>"#945",
+            (1, 3)=>"#575",
+            (1, 7)=>"#a85",
+            (1, 4)=>"#479",
+            (2, 3)=>"#758",
+            (2, 7)=>"#388",
+            (2, 4)=>"#855",
+            (3, 7)=>"#673",
+            (4, 8)=>"#555",
+            (5, 8)=>"#aaa",
+        )
+        @test_reference "refs/edge_color_manual.png" sankey(src, dst, weights; edge_color=c)
     end
 
     @testset "label_position" begin
