@@ -38,27 +38,27 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
 
     @testset "edge_color" begin
         for c in (:src, :dst, "#789")
-            @test_reference "refs/edge_color_$c.png" sankey(src, dst, weights; edge_color=c)
+            @test_reference "refs/edge_color_$c.png" sankey(src, dst, weights; edge_color=c, force_order=[5=>1])
         end
     end
 
     @testset "label_position" begin
         for p in (:node, :legend, :top, :bottom, :left, :right)
             @test_reference "refs/label_position_$p.png" sankey(
-                src, dst, weights; label_position=p
+                src, dst, weights; label_position=p, force_order=[5=>1]
             )
         end
     end
 
     @testset "force_layer" begin
         @test_reference "refs/force_layer.png" sankey(
-            src, dst, weights; force_layer=[6=>3]  # move node 6 to layer 3
+            src, dst, weights; force_layer=[6=>3], force_order=[5=>1]  # move node 6 to layer 3
         )
     end
 
     @testset "force_order" begin
         @test_reference "refs/force_order.png" sankey(
-            src, dst, weights; force_order=[5=>1]  # node 2 shall come before node 1
+            src, dst, weights; force_order=[1=>5]  # node 1 shall come before node 5
         )
     end
 end
