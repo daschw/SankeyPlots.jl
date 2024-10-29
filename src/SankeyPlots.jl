@@ -196,7 +196,10 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
 
     primary := false
     framestyle --> :none
-    legend --> label_position === :legend ? :outertopright : false
+    legend --> label_position === :legend ? true : false
+    if label_position === :legend
+        legend_position --> :outertopright
+    end
     ()
 end
 
