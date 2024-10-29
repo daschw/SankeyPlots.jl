@@ -8,15 +8,13 @@ Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 LayeredLayouts = "f4a74d36-062a-4d48-97cd-1356bad1de4e"
 MetaGraphs = "626554b9-1ddb-594c-aa3c-2596fe9399a5"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
-Graphs = "1.5"
-LayeredLayouts = "0.2.4"
-MetaGraphs = "0.7"
-Plots = "1, 2"
-RecipesBase = "1"
+Graphs = "1.10"
+LayeredLayouts = "0.2.10"
+MetaGraphs = "0.8"
+Plots = "1.35"
 julia = "1"
 
 [extras]

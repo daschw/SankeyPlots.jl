@@ -2,7 +2,6 @@ module SankeyPlots
 
 using LayeredLayouts
 using Plots
-using RecipesBase
 using Graphs, MetaGraphs
 using SparseArrays
 
@@ -37,8 +36,8 @@ In addition to [Plots.jl attributes](http://docs.juliaplots.org/latest/attribute
     label_position=:inside,
     label_size=8,
     compact=false,
-    force_layer::Vector{Pair{Int,Int}}=Vector{Pair{Int,Int}}(),
-    force_order::Vector{Pair{Int,Int}}=Vector{Pair{Int,Int}}(),
+    force_layer=Vector{Pair{Int,Int}}(),
+    force_order=Vector{Pair{Int,Int}}(),
 )
     g = sankey_graph(s.args...)
     names = sankey_names(g, node_labels)
