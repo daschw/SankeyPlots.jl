@@ -87,7 +87,7 @@ energy_colors = palette(:seaborn_colorblind)[[9, 10, 3, 5, 2, 8, 1, 4]]
     @testset "force_order" begin
         @test_reference "refs/force_order.png" sankey(
             src, dst, weights;
-            force_order=[1=>5]  # node 1 shall come before node 5
+            force_order=[1=>2, 1=>5, 6=>3, 3=>4]  # node 1 shall come before node 5
         )
     end
 end

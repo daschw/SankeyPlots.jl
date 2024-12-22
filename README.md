@@ -12,6 +12,9 @@ pkg> add SankeyPlots
 
 ## Usage
 
+The following examples describes how to create a Sankey diagram with the default settings.
+The Sankey diagram is described by passing to the `sankey` function the source nodes `src`, destination nodes `dst`, and the weights `weights` of the edges. The nodes are indexed by integers starting from 1, and the size of the blocks and flows are proportional to the weights.
+
 ```julia
 using SankeyPlots
 
