@@ -35,12 +35,12 @@ jobs:
     steps:
 
       # Setup environment
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.version }}
       - name: Cache artifacts
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         env:
           cache-name: cache-artifacts
         with:
